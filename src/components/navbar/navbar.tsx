@@ -20,12 +20,14 @@ const Navbar = ({ scrollContainerRef, openCaseModal }: NavbarProps) => {
     const container = scrollContainerRef.current;
 
     const handleScroll = () => {
-      const scrollTop = container.scrollTop;
-      const newScrolled = scrollTop > 50;
-      
-      console.log(`Scroll Y: ${scrollTop}, Navbar scrolled: ${newScrolled}`);
-      
-      setScrolled(newScrolled);
+      if (container) {
+        const scrollTop = container.scrollTop;
+        const newScrolled = scrollTop > 50;
+        
+        console.log(`Scroll Y: ${scrollTop}, Navbar scrolled: ${newScrolled}`);
+        
+        setScrolled(newScrolled);
+      }
     };
     
     // Add event listener to the container instead of window

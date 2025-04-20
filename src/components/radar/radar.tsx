@@ -26,12 +26,15 @@ const Radar = () => {
 
     // Radar animation
     const centerX = canvas.width / 2;
-    const centerY = canvas.height * 0.4; // Position radar to align with CTA button
+    // Position radar higher up to better align with the hero section
+    const centerY = window.innerHeight < 768 
+      ? canvas.height * 0.35 // Position higher on mobile
+      : canvas.height * 0.45; // Position for larger screens
     
     // Force circular appearance by using a consistent scaling factor
     // Use a percentage of viewport width, capped to maintain circular aspect ratio
     const aspectRatio = window.innerWidth / window.innerHeight;
-    const scaleFactor = aspectRatio > 1.5 ? 0.55 : 0.65; // Maximum reasonable size
+    const scaleFactor = aspectRatio > 1.5 ? 0.5 : 0.6; // Slightly smaller for better fit
     const maxRadius = Math.min(window.innerWidth, window.innerHeight) * scaleFactor;
     
     // Start angle from 0 (right side) to Math.PI (left side)

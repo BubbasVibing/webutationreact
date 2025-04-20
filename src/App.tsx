@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import Homepage from './pages/homepage/homepage';
 import Contact from './pages/contact/contact';
+import About from './pages/about/about';
+import Careers from './pages/careers/careers';
 import Case from './components/case/case';
 import './App.css';
 
@@ -33,6 +35,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Homepage openCaseModal={openCaseModal} />} />
         <Route path="/contact" element={<Contact openCaseModal={openCaseModal} />} />
+        <Route path="/about" element={<About openCaseModal={openCaseModal} />} />
+        <Route path="/careers" element={<Careers openCaseModal={openCaseModal} />} />
         <Route path="/case" element={<CaseRedirect openModal={openCaseModal} />} />
       </Routes>
     </Router>
