@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Webutation - Protect your business</title>
+    <style>
+      html, body {
+        scroll-behavior: smooth;
+        overflow-x: hidden;
+        overflow-y: hidden; /* Prevent window scrolling */
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+      }
+      
+      #root {
+        min-height: 100%;
+        width: 100%;
+        position: relative;
+        overflow: hidden; /* Prevent #root from scrolling */
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    <script>
+      // Ensure navbar scrolling works properly
+      document.addEventListener('DOMContentLoaded', function() {
+        let lastScrollTop = 0;
+        let navbar = null;
+        
+        function checkScroll() {
+          if (!navbar) {
+            navbar = document.getElementById('main-navbar') || document.querySelector('.navbar');
+          }
+          
+          const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+          
+          if (scrollTop > 50 && navbar) {
+            navbar.classList.add('scrolled');
+          } else if (navbar) {
+            navbar.classList.remove('scrolled');
+          }
+          
+          lastScrollTop = scrollTop;
+        }
+        
+        // Check scroll on the homepage container instead of window
+        const homepageEl = document.querySelector('.homepage');
+        if (homepageEl) {
+          homepageEl.addEventListener('scroll', function() {
+            if (navbar) {
+              navbar.classList.toggle('scrolled', homepageEl.scrollTop > 50);
+            }
+          }, { passive: true });
+        }
+        
+        // Force a check after everything is loaded
+        window.addEventListener('load', checkScroll);
+      });
+    </script>
+  </body>
+</html>

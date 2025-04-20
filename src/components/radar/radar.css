@@ -1,0 +1,117 @@
+.radar-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 56vh;
+  overflow: hidden;
+  z-index: 1;
+  pointer-events: none; /* Prevent radar from interfering with button clicks */
+  opacity: 0.9; /* Slightly transparent to blend better with the solid background */
+}
+
+.radar-animation {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+.social-icons {
+  position: absolute;
+  bottom: 10vh;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 40vh;
+  pointer-events: none; /* Allow clicks to pass through the container but not the icons */
+}
+
+.icon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1), 0 0 15px rgba(54, 98, 174, 0.3);
+  transition: all 0.3s ease;
+  position: absolute;
+  z-index: 3;
+  pointer-events: auto; /* Re-enable pointer events for the icons */
+  overflow: hidden; /* Prevent content from spilling out */
+}
+
+.icon img {
+  width: 11px;
+  height: 11px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 1px rgba(54, 98, 174, 0.5));
+}
+
+.icon:hover {
+  transform: translateY(-3px) scale(1.1);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15), 0 0 20px rgba(54, 98, 174, 0.5);
+}
+
+/* Position social icons inside the radar half-circle (bottom half) */
+.facebook {
+  left: calc(50% - 200px);
+  bottom: 45%;
+}
+
+.instagram {
+  left: calc(50% - 110px);
+  bottom: 35%;
+}
+
+.linkedin {
+  left: 50%;
+  bottom: 30%;
+  transform: translateX(-50%);
+}
+
+.twitter {
+  right: calc(50% - 110px);
+  bottom: 35%;
+}
+
+.tiktok {
+  right: calc(50% - 200px);
+  bottom: 45%;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .icon {
+    width: 35px;
+    height: 35px;
+  }
+  
+  .icon img {
+    width: 9px;
+    height: 9px;
+  }
+  
+  .facebook {
+    left: calc(50% - 140px);
+    bottom: 45%;
+  }
+  
+  .instagram {
+    left: calc(50% - 70px);
+    bottom: 35%;
+  }
+  
+  .twitter {
+    right: calc(50% - 70px);
+    bottom: 35%;
+  }
+  
+  .tiktok {
+    right: calc(50% - 140px);
+    bottom: 45%;
+  }
+}
