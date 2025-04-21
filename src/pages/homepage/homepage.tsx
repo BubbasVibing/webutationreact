@@ -1,6 +1,7 @@
 import Navbar from "../../components/navbar/navbar";
 import Radar from "../../components/radar/radar";
 import Footer from "../../components/footer/footer";
+import HowItWorksSection from "./HowItWorksSection";
 import "./homepage.css";
 import {
   FaShieldAlt,
@@ -17,7 +18,7 @@ import {
   FaChartPie,
 } from "react-icons/fa";
 import { useEffect, useRef, useState, RefObject } from "react";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 
 interface HomepageProps {
   openCaseModal: () => void;
@@ -26,7 +27,9 @@ interface HomepageProps {
 const Homepage = ({ openCaseModal }: HomepageProps) => {
   const [countVisible, setCountVisible] = useState(false);
   const metricsRef = useRef<HTMLDivElement>(null);
-  const scrollContainerRef = useRef<HTMLDivElement>(null) as RefObject<HTMLDivElement>;
+  const scrollContainerRef = useRef<HTMLDivElement>(
+    null
+  ) as RefObject<HTMLDivElement>;
   const [currentSlide, setCurrentSlide] = useState(0);
   const sliderTimerRef = useRef<NodeJS.Timeout | null>(null);
   const [activeTab, setActiveTab] = useState("name");
@@ -142,17 +145,24 @@ const Homepage = ({ openCaseModal }: HomepageProps) => {
 
   // Get placeholder text based on active tab
   const getPlaceholderText = () => {
-    switch(activeTab) {
-      case "username": return "Enter a Username";
-      case "phone": return "Enter a Phone Number";
-      case "email": return "Enter an Email";
-      default: return "Enter a Name";
+    switch (activeTab) {
+      case "username":
+        return "Enter a Username";
+      case "phone":
+        return "Enter a Phone Number";
+      case "email":
+        return "Enter an Email";
+      default:
+        return "Enter a Name";
     }
   };
 
   return (
     <div className="homepage" ref={scrollContainerRef}>
-      <Navbar scrollContainerRef={scrollContainerRef} openCaseModal={openCaseModal} />
+      <Navbar
+        scrollContainerRef={scrollContainerRef}
+        openCaseModal={openCaseModal}
+      />
 
       <div className="hero-section">
         <div className="hero-content">
@@ -164,116 +174,20 @@ const Homepage = ({ openCaseModal }: HomepageProps) => {
             Empower your decision-making and safeguard against fraud with
             comprehensive social intelligence solution.
           </p>
-          
-          <button onClick={openCaseModal} className="cta-button">Refer a Case</button>
+
+          <button onClick={openCaseModal} className="cta-button">
+            Refer a Case
+          </button>
         </div>
 
         <Radar />
       </div>
 
-      <div className="how-it-works-section">
-        <h2>How it works</h2>
-
-        <p className="how-it-works-description">
-          Using advanced algorithms, OSINT methodology and investigative
-          technologies, Webutation scours social media, public records, and
-          other digital footprints to provide actionable intelligence.
-        </p>
-
-        <div className="search-container">
-          <div className="search-tabs">
-            <button 
-              className={`tab-button ${activeTab === "name" ? "active" : ""}`}
-              onClick={() => handleTabChange("name")}
-            >
-              Name
-            </button>
-            <button 
-              className={`tab-button ${activeTab === "username" ? "active" : ""}`}
-              onClick={() => handleTabChange("username")}
-            >
-              Username
-            </button>
-            <button 
-              className={`tab-button ${activeTab === "phone" ? "active" : ""}`}
-              onClick={() => handleTabChange("phone")}
-            >
-              Phone
-            </button>
-            <button 
-              className={`tab-button ${activeTab === "email" ? "active" : ""}`}
-              onClick={() => handleTabChange("email")}
-            >
-              Email
-            </button>
-          </div>
-
-          <div className="search-input-container">
-            <div className="search-input-wrapper">
-              <div className="search-icon">
-                <svg
-                  width="20"
-                  height="20"
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M9 16C12.866 16 16 12.866 16 9C16 5.13401 12.866 2 9 2C5.13401 2 2 5.13401 2 9C2 12.866 5.13401 16 9 16Z"
-                    stroke="#3662AE"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M14 14L18 18"
-                    stroke="#3662AE"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </div>
-              <input
-                type="text"
-                placeholder={getPlaceholderText()}
-                className="search-input"
-              />
-              <div className="clear-search">
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M12 4L4 12"
-                    stroke="#C5C5C5"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M4 4L12 12"
-                    stroke="#C5C5C5"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </div>
-            </div>
-            <button className="search-button">Search Now</button>
-          </div>
-
-          <p className="search-description">
-            Search by name, username, phone, or email to confidentially lookup
-            information about people you know such as yourself, friends, family,
-            acquaintances, and old classmates.
-          </p>
-        </div>
-      </div>
+      <HowItWorksSection
+        activeTab={activeTab}
+        handleTabChange={handleTabChange}
+        getPlaceholderText={getPlaceholderText}
+      />
 
       <div className="about-us-section">
         <div className="about-us-content">
@@ -640,15 +554,15 @@ const Homepage = ({ openCaseModal }: HomepageProps) => {
           </div>
 
           <div className="testimonial-arrows">
-            <button 
-              className="testimonial-arrow prev" 
+            <button
+              className="testimonial-arrow prev"
               onClick={prevSlide}
               aria-label="Previous testimonial"
             >
               ←
             </button>
-            <button 
-              className="testimonial-arrow next" 
+            <button
+              className="testimonial-arrow next"
               onClick={nextSlide}
               aria-label="Next testimonial"
             >
