@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { getBaseUrl } from "../../utils/getBaseUrl";
 import axios from "axios";
 
 // =================== Types =================== //
@@ -29,7 +30,7 @@ export const fetchOsintData = createAsyncThunk(
       if (payload.phone) params.phone = payload.phone;
       if (payload.username) params.username = payload.username;
 
-      const response = await axios.get("http://localhost:3000/api/osint", {
+      const response = await axios.get(`${getBaseUrl()}/api/osint`, {
         params,
       });
 

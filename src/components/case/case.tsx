@@ -1,10 +1,17 @@
-import React, { useState, ChangeEvent, FormEvent } from 'react';
-import { 
-  FaUser, 
-  FaBuilding, 
-  FaMapMarkerAlt, 
-  FaPhone, 
-  FaEnvelope, 
+import React, { useState, ChangeEvent, FormEvent } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { AppDispatch, RootState } from "../../redux-store/store";
+import {
+  submitWebutationForm,
+  resetWebutationFormState,
+} from "../../redux-store/webutationFormSlice/webutationFormSlice";
+import {
+  FaUser,
+  FaBuilding,
+  FaMapMarkerAlt,
+  FaPhone,
+  FaEnvelope,
   FaFileAlt,
   FaCalendarAlt,
   FaMedkit,
@@ -14,10 +21,10 @@ import {
   FaTimes,
   FaArrowLeft,
   FaArrowRight,
-  FaCheckCircle
-} from 'react-icons/fa';
-import './case.css';
-import { format, parse } from 'date-fns';
+  FaCheckCircle,
+} from "react-icons/fa";
+import "./case.css";
+import { format, parse } from "date-fns";
 
 // Define types for form data
 interface FormData {
@@ -54,32 +61,35 @@ interface CaseProps {
 }
 
 const Case: React.FC<CaseProps> = ({ isOpen, onClose }) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { loading } = useSelector((state: RootState) => state.webutationForm);
+
   const [formData, setFormData] = useState<FormData>({
     caseType: [],
-    referrerFirstName: '',
-    referrerLastName: '',
-    companyName: '',
-    city: '',
-    state: 'PA - Pennsylvania',
-    phoneNumber: '',
-    email: '',
-    claimFileNumber: '',
-    claimType: '',
-    subject: '',
-    address: '',
-    lastFourSS: '',
-    dob: '',
-    dol: '',
-    injury: '',
-    subjectPhone: '',
-    subjectEmail: '',
-    employer: '',
-    tpa: '',
-    isRepresented: '',
-    hobbies: '',
-    restrictions: '',
+    referrerFirstName: "",
+    referrerLastName: "",
+    companyName: "",
+    city: "",
+    state: "PA - Pennsylvania",
+    phoneNumber: "",
+    email: "",
+    claimFileNumber: "",
+    claimType: "",
+    subject: "",
+    address: "",
+    lastFourSS: "",
+    dob: "",
+    dol: "",
+    injury: "",
+    subjectPhone: "",
+    subjectEmail: "",
+    employer: "",
+    tpa: "",
+    isRepresented: "",
+    hobbies: "",
+    restrictions: "",
     files: [],
-    otherCaseType: ''
+    otherCaseType: "",
   });
 
   const [currentStep, setCurrentStep] = useState(1);
@@ -91,122 +101,157 @@ const Case: React.FC<CaseProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   const caseTypeOptions = [
-    'Other',
-    'Social Intelligence Reports',
-    'Background Checks',
-    'Medical Canvasses',
-    'Surveillance',
-    'Social Media Intelligence Search',
-    'Gym Canvas',
-    'Cell Phone Data (Loc8)',
-    'Locate',
-    'Brand Defense',
-    'Expert Testimony',
-    'Social Media Monitoring'
+    "Other",
+    "Social Intelligence Reports",
+    "Background Checks",
+    "Medical Canvasses",
+    "Surveillance",
+    "Social Media Intelligence Search",
+    "Gym Canvas",
+    "Cell Phone Data (Loc8)",
+    "Locate",
+    "Brand Defense",
+    "Expert Testimony",
+    "Social Media Monitoring",
   ];
 
   const stateOptions = [
-    'AL - Alabama', 'AK - Alaska', 'AZ - Arizona', 'AR - Arkansas',
-    'CA - California', 'CO - Colorado', 'CT - Connecticut', 'DE - Delaware',
-    'FL - Florida', 'GA - Georgia', 'HI - Hawaii', 'ID - Idaho',
-    'IL - Illinois', 'IN - Indiana', 'IA - Iowa', 'KS - Kansas',
-    'KY - Kentucky', 'LA - Louisiana', 'ME - Maine', 'MD - Maryland',
-    'MA - Massachusetts', 'MI - Michigan', 'MN - Minnesota', 'MS - Mississippi',
-    'MO - Missouri', 'MT - Montana', 'NE - Nebraska', 'NV - Nevada',
-    'NH - New Hampshire', 'NJ - New Jersey', 'NM - New Mexico', 'NY - New York',
-    'NC - North Carolina', 'ND - North Dakota', 'OH - Ohio', 'OK - Oklahoma',
-    'OR - Oregon', 'PA - Pennsylvania', 'RI - Rhode Island', 'SC - South Carolina',
-    'SD - South Dakota', 'TN - Tennessee', 'TX - Texas', 'UT - Utah',
-    'VT - Vermont', 'VA - Virginia', 'WA - Washington', 'WV - West Virginia',
-    'WI - Wisconsin', 'WY - Wyoming'
+    "AL - Alabama",
+    "AK - Alaska",
+    "AZ - Arizona",
+    "AR - Arkansas",
+    "CA - California",
+    "CO - Colorado",
+    "CT - Connecticut",
+    "DE - Delaware",
+    "FL - Florida",
+    "GA - Georgia",
+    "HI - Hawaii",
+    "ID - Idaho",
+    "IL - Illinois",
+    "IN - Indiana",
+    "IA - Iowa",
+    "KS - Kansas",
+    "KY - Kentucky",
+    "LA - Louisiana",
+    "ME - Maine",
+    "MD - Maryland",
+    "MA - Massachusetts",
+    "MI - Michigan",
+    "MN - Minnesota",
+    "MS - Mississippi",
+    "MO - Missouri",
+    "MT - Montana",
+    "NE - Nebraska",
+    "NV - Nevada",
+    "NH - New Hampshire",
+    "NJ - New Jersey",
+    "NM - New Mexico",
+    "NY - New York",
+    "NC - North Carolina",
+    "ND - North Dakota",
+    "OH - Ohio",
+    "OK - Oklahoma",
+    "OR - Oregon",
+    "PA - Pennsylvania",
+    "RI - Rhode Island",
+    "SC - South Carolina",
+    "SD - South Dakota",
+    "TN - Tennessee",
+    "TX - Texas",
+    "UT - Utah",
+    "VT - Vermont",
+    "VA - Virginia",
+    "WA - Washington",
+    "WV - West Virginia",
+    "WI - Wisconsin",
+    "WY - Wyoming",
   ];
 
-  const formatDate = (date: Date | null): string => {
-    if (!date) return '';
-    return format(date, 'dd/MM/yyyy');
-  };
-
-  const parseDate = (dateString: string): Date | null => {
-    if (!dateString) return null;
-    try {
-      // Try to parse as DD/MM/YYYY first (user input format)
-      if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(dateString)) {
-        return parse(dateString, 'dd/MM/yyyy', new Date());
-      }
-      // Try to parse as YYYY-MM-DD (HTML input format)
-      if (/^\d{4}-\d{2}-\d{2}$/.test(dateString)) {
-        return parse(dateString, 'yyyy-MM-dd', new Date());
-      }
-      return null;
-    } catch (error) {
-      console.error('Error parsing date:', error);
-      return null;
-    }
-  };
-
-  const toHtmlDateFormat = (date: Date | null): string => {
-    if (!date) return '';
-    return format(date, 'yyyy-MM-dd');
-  };
-
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value
-    });
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleCaseTypeChange = (type: string) => {
-    const updatedCaseTypes = [...formData.caseType];
-    
-    if (updatedCaseTypes.includes(type)) {
-      // Remove if already selected
-      const index = updatedCaseTypes.indexOf(type);
-      updatedCaseTypes.splice(index, 1);
-    } else {
-      // Add if not already selected
-      updatedCaseTypes.push(type);
-    }
-    
-    setFormData({
-      ...formData,
-      caseType: updatedCaseTypes
-    });
+    setFormData((prev) => ({
+      ...prev,
+      caseType: prev.caseType.includes(type)
+        ? prev.caseType.filter((t) => t !== type)
+        : [...prev.caseType, type],
+    }));
   };
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      setFormData({
-        ...formData,
-        files: [...formData.files, ...Array.from(e.target.files)]
-      });
+      setFormData((prev) => ({
+        ...prev,
+        files: [...prev.files, ...Array.from(e.target.files)],
+      }));
     }
-    
-    // Reset file input
-    setFileInputKey(prev => prev + 1);
+    setFileInputKey((prev) => prev + 1);
   };
 
   const handleFileRemove = (index: number) => {
-    const newFiles = [...formData.files];
-    newFiles.splice(index, 1);
-    setFormData({
-      ...formData,
-      files: newFiles
+    const updated = [...formData.files];
+    updated.splice(index, 1);
+    setFormData((prev) => ({ ...prev, files: updated }));
+  };
+
+  const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
     });
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setSubmitting(true);
-    
-    // Simulating submission
-    setTimeout(() => {
-      console.log('Form submitted:', formData);
-      setSubmitting(false);
-      alert('Case submitted successfully!');
-      onClose(); // Close the modal after submission
-    }, 1500);
+
+    const base64File = formData.files[0]
+      ? await fileToBase64(formData.files[0])
+      : null;
+
+    const payload: any = {
+      "case-type": formData.caseType,
+      "referrer-first-name": formData.referrerFirstName,
+      "referrer-last-name": formData.referrerLastName,
+      "referrer-company-name": formData.companyName,
+      "referrer-city": formData.city,
+      "referrer-state": formData.state,
+      "referrer-phone": formData.phoneNumber,
+      "referrer-email": formData.email,
+      "claim-number": formData.claimFileNumber,
+      "claim-type": formData.claimType,
+      subject: formData.subject,
+      address: formData.address,
+      ssn: formData.lastFourSS,
+      dob: formData.dob,
+      dol: formData.dol,
+      injury: formData.injury,
+      phone: formData.subjectPhone,
+      email: formData.subjectEmail,
+      employer: formData.employer,
+      tpa: formData.tpa,
+      represented: formData.isRepresented,
+      hobbies: formData.hobbies,
+      restrictions: formData.restrictions,
+      attachments: base64File,
+    };
+
+    const result = await dispatch(submitWebutationForm(payload));
+
+    if (submitWebutationForm.fulfilled.match(result)) {
+      toast.success("Case submitted successfully!");
+      dispatch(resetWebutationFormState());
+      onClose();
+    } else {
+      toast.error("Failed to submit case: " + result.payload);
+    }
   };
 
   const nextStep = () => {
@@ -234,13 +279,23 @@ const Case: React.FC<CaseProps> = ({ isOpen, onClose }) => {
           {Array.from({ length: totalSteps }).map((_, index) => (
             <React.Fragment key={index}>
               <div className="progress-step">
-                <div 
-                  className={`step-indicator ${currentStep >= index + 1 ? 'active' : ''} ${currentStep > index + 1 ? 'completed' : ''}`}
+                <div
+                  className={`step-indicator ${
+                    currentStep >= index + 1 ? "active" : ""
+                  } ${currentStep > index + 1 ? "completed" : ""}`}
                   onClick={() => goToStep(index + 1)}
                 >
                   {currentStep > index + 1 ? <FaCheckCircle /> : index + 1}
                 </div>
-                <span>{index === 0 ? 'Case Type' : index === 1 ? 'Referrer' : index === 2 ? 'Claimant' : 'Files'}</span>
+                <span>
+                  {index === 0
+                    ? "Case Type"
+                    : index === 1
+                    ? "Referrer"
+                    : index === 2
+                    ? "Claimant"
+                    : "Files"}
+                </span>
               </div>
               {index < totalSteps - 1 && <div className="progress-line"></div>}
             </React.Fragment>
@@ -255,8 +310,8 @@ const Case: React.FC<CaseProps> = ({ isOpen, onClose }) => {
     return (
       <div className="form-navigation">
         {currentStep > 1 && (
-          <button 
-            type="button" 
+          <button
+            type="button"
             className="button button-secondary"
             onClick={prevStep}
           >
@@ -264,16 +319,16 @@ const Case: React.FC<CaseProps> = ({ isOpen, onClose }) => {
           </button>
         )}
         {currentStep < totalSteps ? (
-          <button 
-            type="button" 
+          <button
+            type="button"
             className="button button-primary"
             onClick={nextStep}
           >
             Continue <FaArrowRight className="button-icon-right" />
           </button>
         ) : (
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             className="button button-submit"
             disabled={submitting}
           >
@@ -284,7 +339,7 @@ const Case: React.FC<CaseProps> = ({ isOpen, onClose }) => {
               </span>
             ) : (
               <span className="submit-text">
-                <FaPaperPlane className="submit-icon" /> 
+                <FaPaperPlane className="submit-icon" />
                 Submit Case
               </span>
             )}
@@ -294,23 +349,26 @@ const Case: React.FC<CaseProps> = ({ isOpen, onClose }) => {
     );
   };
 
-  const handleDateInputChange = (e: React.ChangeEvent<HTMLInputElement>, field: string) => {
+  const handleDateInputChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    field: string
+  ) => {
     const { value } = e.target;
     setFormData({
       ...formData,
-      [field]: value
+      [field]: value,
     });
   };
 
   return (
     <div className="case-modal-overlay" onClick={onClose}>
-      <div className="case-container" onClick={e => e.stopPropagation()}>
+      <div className="case-container" onClick={(e) => e.stopPropagation()}>
         <div className="case-form-wrapper">
           <button className="case-close-button" onClick={onClose}>
             <FaTimes />
           </button>
           <h1 className="case-title">Webutation Case Details</h1>
-          
+
           {renderProgressBar()}
 
           <form onSubmit={handleSubmit} className="case-form">
@@ -320,25 +378,31 @@ const Case: React.FC<CaseProps> = ({ isOpen, onClose }) => {
                 <p className="form-description">
                   Select all case types that apply to your situation.
                 </p>
-                
+
                 <div className="case-types-grid">
                   {caseTypeOptions.map((type) => (
-                    <div 
-                      key={type} 
-                      className={`case-type-option ${formData.caseType.includes(type) ? 'selected' : ''}`}
+                    <div
+                      key={type}
+                      className={`case-type-option ${
+                        formData.caseType.includes(type) ? "selected" : ""
+                      }`}
                       onClick={() => handleCaseTypeChange(type)}
                     >
                       <div className="case-type-checkbox">
-                        {formData.caseType.includes(type) && <span className="checkbox-selected"></span>}
+                        {formData.caseType.includes(type) && (
+                          <span className="checkbox-selected"></span>
+                        )}
                       </div>
                       <span>{type}</span>
                     </div>
                   ))}
                 </div>
-                
-                {formData.caseType.includes('Other') && (
+
+                {formData.caseType.includes("Other") && (
                   <div className="other-case-type">
-                    <label htmlFor="otherCaseType">Please specify other case type:</label>
+                    <label htmlFor="otherCaseType">
+                      Please specify other case type:
+                    </label>
                     <input
                       type="text"
                       id="otherCaseType"
@@ -349,7 +413,7 @@ const Case: React.FC<CaseProps> = ({ isOpen, onClose }) => {
                     />
                   </div>
                 )}
-                
+
                 {renderStepNavigation()}
               </div>
             )}
@@ -360,7 +424,7 @@ const Case: React.FC<CaseProps> = ({ isOpen, onClose }) => {
                 <p className="form-description">
                   Please provide your contact information as the case referrer.
                 </p>
-                
+
                 <div className="form-row">
                   <div className="form-group">
                     <label htmlFor="referrerFirstName">
@@ -376,7 +440,7 @@ const Case: React.FC<CaseProps> = ({ isOpen, onClose }) => {
                       placeholder="Yassine"
                     />
                   </div>
-                  
+
                   <div className="form-group">
                     <label htmlFor="referrerLastName">
                       <FaUser className="form-icon" />
@@ -392,7 +456,7 @@ const Case: React.FC<CaseProps> = ({ isOpen, onClose }) => {
                     />
                   </div>
                 </div>
-                
+
                 <div className="form-group">
                   <label htmlFor="companyName">
                     <FaBuilding className="form-icon" />
@@ -407,7 +471,7 @@ const Case: React.FC<CaseProps> = ({ isOpen, onClose }) => {
                     placeholder="Your company"
                   />
                 </div>
-                
+
                 <div className="form-row">
                   <div className="form-group">
                     <label htmlFor="city">
@@ -423,7 +487,7 @@ const Case: React.FC<CaseProps> = ({ isOpen, onClose }) => {
                       placeholder="Glenolden"
                     />
                   </div>
-                  
+
                   <div className="form-group">
                     <label htmlFor="state">
                       <FaMapMarkerAlt className="form-icon" />
@@ -443,7 +507,7 @@ const Case: React.FC<CaseProps> = ({ isOpen, onClose }) => {
                     </select>
                   </div>
                 </div>
-                
+
                 <div className="form-row">
                   <div className="form-group">
                     <label htmlFor="phoneNumber">
@@ -459,7 +523,7 @@ const Case: React.FC<CaseProps> = ({ isOpen, onClose }) => {
                       placeholder="4848025609"
                     />
                   </div>
-                  
+
                   <div className="form-group">
                     <label htmlFor="email">
                       <FaEnvelope className="form-icon" />
@@ -475,7 +539,7 @@ const Case: React.FC<CaseProps> = ({ isOpen, onClose }) => {
                     />
                   </div>
                 </div>
-                
+
                 {renderStepNavigation()}
               </div>
             )}
@@ -484,9 +548,11 @@ const Case: React.FC<CaseProps> = ({ isOpen, onClose }) => {
               <div className="form-step">
                 <h2>Claimant Information</h2>
                 <p className="form-description">
-                  If you could fill out as much of the information below that would be helpful. No worries if you don't have everything, we'll find the rest.
+                  If you could fill out as much of the information below that
+                  would be helpful. No worries if you don't have everything,
+                  we'll find the rest.
                 </p>
-                
+
                 <div className="form-row">
                   <div className="form-group">
                     <label htmlFor="claimFileNumber">
@@ -501,7 +567,7 @@ const Case: React.FC<CaseProps> = ({ isOpen, onClose }) => {
                       onChange={handleInputChange}
                     />
                   </div>
-                  
+
                   <div className="form-group">
                     <label htmlFor="claimType">
                       <FaFileAlt className="form-icon" />
@@ -517,7 +583,7 @@ const Case: React.FC<CaseProps> = ({ isOpen, onClose }) => {
                     />
                   </div>
                 </div>
-                
+
                 <div className="form-row">
                   <div className="form-group">
                     <label htmlFor="subject">
@@ -532,7 +598,7 @@ const Case: React.FC<CaseProps> = ({ isOpen, onClose }) => {
                       onChange={handleInputChange}
                     />
                   </div>
-                  
+
                   <div className="form-group">
                     <label htmlFor="lastFourSS">
                       <FaFileAlt className="form-icon" />
@@ -548,7 +614,7 @@ const Case: React.FC<CaseProps> = ({ isOpen, onClose }) => {
                     />
                   </div>
                 </div>
-                
+
                 <div className="form-row">
                   <div className="form-group">
                     <label htmlFor="address">
@@ -564,7 +630,7 @@ const Case: React.FC<CaseProps> = ({ isOpen, onClose }) => {
                       placeholder="409 w south ave"
                     />
                   </div>
-                  
+
                   <div className="form-group">
                     <label htmlFor="injury">
                       <FaMedkit className="form-icon" />
@@ -579,7 +645,7 @@ const Case: React.FC<CaseProps> = ({ isOpen, onClose }) => {
                     />
                   </div>
                 </div>
-                
+
                 <div className="form-row">
                   <div className="form-group">
                     <label htmlFor="dob">
@@ -595,7 +661,7 @@ const Case: React.FC<CaseProps> = ({ isOpen, onClose }) => {
                       placeholder="DD/MM/YYYY"
                     />
                   </div>
-                  
+
                   <div className="form-group">
                     <label htmlFor="dol">
                       <FaCalendarAlt className="form-icon" />
@@ -611,7 +677,7 @@ const Case: React.FC<CaseProps> = ({ isOpen, onClose }) => {
                     />
                   </div>
                 </div>
-                
+
                 <div className="form-row">
                   <div className="form-group">
                     <label htmlFor="isRepresented">
@@ -631,7 +697,7 @@ const Case: React.FC<CaseProps> = ({ isOpen, onClose }) => {
                     </select>
                   </div>
                 </div>
-                
+
                 <div className="form-row">
                   <div className="form-group">
                     <label htmlFor="subjectPhone">
@@ -646,7 +712,7 @@ const Case: React.FC<CaseProps> = ({ isOpen, onClose }) => {
                       onChange={handleInputChange}
                     />
                   </div>
-                  
+
                   <div className="form-group">
                     <label htmlFor="subjectEmail">
                       <FaEnvelope className="form-icon" />
@@ -661,7 +727,7 @@ const Case: React.FC<CaseProps> = ({ isOpen, onClose }) => {
                     />
                   </div>
                 </div>
-                
+
                 <div className="form-row">
                   <div className="form-group">
                     <label htmlFor="employer">
@@ -676,7 +742,7 @@ const Case: React.FC<CaseProps> = ({ isOpen, onClose }) => {
                       onChange={handleInputChange}
                     />
                   </div>
-                  
+
                   <div className="form-group">
                     <label htmlFor="tpa">
                       <FaBuilding className="form-icon" />
@@ -691,7 +757,7 @@ const Case: React.FC<CaseProps> = ({ isOpen, onClose }) => {
                     />
                   </div>
                 </div>
-                
+
                 <div className="form-row">
                   <div className="form-group">
                     <label htmlFor="hobbies">
@@ -706,7 +772,7 @@ const Case: React.FC<CaseProps> = ({ isOpen, onClose }) => {
                       onChange={handleInputChange}
                     />
                   </div>
-                  
+
                   <div className="form-group">
                     <label htmlFor="restrictions">
                       <FaMedkit className="form-icon" />
@@ -721,24 +787,25 @@ const Case: React.FC<CaseProps> = ({ isOpen, onClose }) => {
                     />
                   </div>
                 </div>
-                
+
                 {renderStepNavigation()}
               </div>
             )}
-            
+
             {currentStep === 4 && (
               <div className="form-step">
                 <h2>Supporting Documents</h2>
                 <p className="form-description">
-                  Please attach any previous FROI, incident or police reports; BOP's, interrogatories, etc...
+                  Please attach any previous FROI, incident or police reports;
+                  BOP's, interrogatories, etc...
                 </p>
-                
+
                 <div className="file-upload-container">
                   <div className="file-upload-box">
-                    <input 
-                      type="file" 
-                      id="fileUpload" 
-                      key={fileInputKey} 
+                    <input
+                      type="file"
+                      id="fileUpload"
+                      key={fileInputKey}
                       onChange={handleFileChange}
                       multiple
                       className="file-input"
@@ -748,7 +815,7 @@ const Case: React.FC<CaseProps> = ({ isOpen, onClose }) => {
                       <span>Drop files here or click to upload</span>
                     </label>
                   </div>
-                  
+
                   {formData.files.length > 0 && (
                     <div className="uploaded-files">
                       <h3>Uploaded Files</h3>
@@ -756,8 +823,8 @@ const Case: React.FC<CaseProps> = ({ isOpen, onClose }) => {
                         {formData.files.map((file, index) => (
                           <li key={index} className="file-item">
                             <span className="file-name">{file.name}</span>
-                            <button 
-                              type="button" 
+                            <button
+                              type="button"
                               className="remove-file-btn"
                               onClick={() => handleFileRemove(index)}
                             >
@@ -769,7 +836,7 @@ const Case: React.FC<CaseProps> = ({ isOpen, onClose }) => {
                     </div>
                   )}
                 </div>
-                
+
                 {renderStepNavigation()}
               </div>
             )}

@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import osintReducer from "./osintSlice/osintSlice";
+import webutationFormReducer from "./webutationFormSlice/webutationFormSlice";
 
 const store = configureStore({
   reducer: {
     osint: osintReducer,
+    webutationForm: webutationFormReducer,
   },
 });
 
