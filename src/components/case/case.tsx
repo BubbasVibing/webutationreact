@@ -1,7 +1,7 @@
 import React, { useState, ChangeEvent, FormEvent } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
-import { AppDispatch, RootState } from "../../redux-store/store";
+import { AppDispatch } from "../../redux-store/store";
 import {
   submitWebutationForm,
   resetWebutationFormState,
@@ -24,7 +24,6 @@ import {
   FaCheckCircle,
 } from "react-icons/fa";
 import "./case.css";
-import { format, parse } from "date-fns";
 
 // Define types for form data
 interface FormData {
@@ -62,7 +61,6 @@ interface CaseProps {
 
 const Case: React.FC<CaseProps> = ({ isOpen, onClose }) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { loading } = useSelector((state: RootState) => state.webutationForm);
 
   const [formData, setFormData] = useState<FormData>({
     caseType: [],
@@ -93,7 +91,7 @@ const Case: React.FC<CaseProps> = ({ isOpen, onClose }) => {
   });
 
   const [currentStep, setCurrentStep] = useState(1);
-  const [submitting, setSubmitting] = useState(false);
+  const [submitting] = useState(false);
   const [fileInputKey, setFileInputKey] = useState(0);
   const totalSteps = 4;
 
@@ -185,10 +183,11 @@ const Case: React.FC<CaseProps> = ({ isOpen, onClose }) => {
   };
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
+    const fileList = e.target.files;
+    if (fileList) {
       setFormData((prev) => ({
         ...prev,
-        files: [...prev.files, ...Array.from(e.target.files)],
+        files: [...prev.files, ...Array.from(fileList)],
       }));
     }
     setFileInputKey((prev) => prev + 1);
@@ -347,17 +346,6 @@ const Case: React.FC<CaseProps> = ({ isOpen, onClose }) => {
         )}
       </div>
     );
-  };
-
-  const handleDateInputChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    field: string
-  ) => {
-    const { value } = e.target;
-    setFormData({
-      ...formData,
-      [field]: value,
-    });
   };
 
   return (

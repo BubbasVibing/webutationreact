@@ -18,7 +18,6 @@ import {
   FaChartPie,
 } from "react-icons/fa";
 import { useEffect, useRef, useState, RefObject } from "react";
-import { Link } from "react-router-dom";
 import PeopleSearch from "./PeopleSearch";
 
 interface HomepageProps {

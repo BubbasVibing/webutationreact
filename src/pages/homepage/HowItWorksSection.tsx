@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchOsintData,
   resetOsintState,
 } from "../../redux-store/osintSlice/osintSlice";
-import { RootState } from "../../redux-store/store";
+import { AppDispatch, RootState } from "../../redux-store/store";
 import "./homepage.css";
 
 interface Props {
@@ -46,7 +46,7 @@ const HowItWorksSection = ({
   handleTabChange,
   getPlaceholderText,
 }: Props) => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const [searchInput, setSearchInput] = useState("");
 
   const { data, status, loading, error } = useSelector(
@@ -70,7 +70,7 @@ const HowItWorksSection = ({
     else if (activeTab === "phone") payload.phone = searchInput;
     else if (activeTab === "username") payload.username = searchInput;
 
-    await dispatch(fetchOsintData(payload));
+    await dispatch(fetchOsintData(payload)).unwrap();
   };
 
   return (

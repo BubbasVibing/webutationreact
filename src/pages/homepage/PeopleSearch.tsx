@@ -1,15 +1,15 @@
 // =================== PeopleSearch.tsx =================== //
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchPeopleDataLabs,
   resetPeopleDataLabsState,
 } from "../../redux-store/peopleDataLabsSlice/peopleDataLabsSlice";
-import { RootState } from "../../redux-store/store";
+import { AppDispatch, RootState } from "../../redux-store/store";
 
 const PeopleSearch = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const [jobTitle, setJobTitle] = useState("");
   const [country, setCountry] = useState("");
 
@@ -37,7 +37,7 @@ const PeopleSearch = () => {
       pretty: false,
     };
 
-    await dispatch(fetchPeopleDataLabs(payload));
+    await dispatch(fetchPeopleDataLabs(payload)).unwrap();
   };
 
   return (
