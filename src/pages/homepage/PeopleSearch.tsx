@@ -13,7 +13,7 @@ import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 
 // =================== Setup Country Options =================== //
-const countryOptions = getNames().map((country) => ({
+const countryOptions = getNames().map((country: string) => ({
   value: country,
   label: country,
 }));
