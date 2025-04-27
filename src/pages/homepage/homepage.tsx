@@ -19,6 +19,7 @@ import {
 } from "react-icons/fa";
 import { useEffect, useRef, useState, RefObject } from "react";
 import { Link } from "react-router-dom";
+import PeopleSearch from "./PeopleSearch";
 
 interface HomepageProps {
   openCaseModal: () => void;
@@ -188,6 +189,7 @@ const Homepage = ({ openCaseModal }: HomepageProps) => {
         handleTabChange={handleTabChange}
         getPlaceholderText={getPlaceholderText}
       />
+      <PeopleSearch />
 
       <div className="about-us-section">
         <div className="about-us-content">
