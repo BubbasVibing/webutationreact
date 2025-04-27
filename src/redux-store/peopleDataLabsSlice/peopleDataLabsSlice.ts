@@ -7,7 +7,9 @@ import axios from "axios";
 // =================== Types =================== //
 
 interface PeopleDataLabsPayload {
-  query: any;
+  name?: string;
+  phone?: string;
+  country?: string;
   size?: number;
   dataset?: string;
   titlecase?: boolean;
@@ -23,7 +25,7 @@ interface PeopleDataLabsState {
 
 // =================== Async Thunks =================== //
 
-// POST request (full query structure)
+// POST request (send fields like name, phone, country directly)
 export const fetchPeopleDataLabs = createAsyncThunk(
   "peopleDataLabs/fetchPeopleDataLabs",
   async (payload: PeopleDataLabsPayload, { rejectWithValue }) => {
@@ -34,31 +36,35 @@ export const fetchPeopleDataLabs = createAsyncThunk(
       );
       return response.data;
     } catch (err: any) {
-      return rejectWithValue(
-        err.response?.data?.error || err.message || "Request failed"
-      );
+      const message =
+        err.response?.data?.error?.message ||
+        err.response?.data?.message ||
+        err.message ||
+        "Request failed";
+      return rejectWithValue(message);
     }
   }
 );
 
-// GET request (simple query, query string passed as param)
+// GET request (simple search by passing params)
 export const fetchPeopleDataLabsSimple = createAsyncThunk(
   "peopleDataLabs/fetchPeopleDataLabsSimple",
-  async (query: object, { rejectWithValue }) => {
+  async (payload: PeopleDataLabsPayload, { rejectWithValue }) => {
     try {
       const response = await axios.get(
         `${getBaseUrl()}/api/people/search-simple`,
         {
-          params: {
-            query: JSON.stringify(query),
-          },
+          params: payload,
         }
       );
       return response.data;
     } catch (err: any) {
-      return rejectWithValue(
-        err.response?.data?.error || err.message || "Request failed"
-      );
+      const message =
+        err.response?.data?.error?.message ||
+        err.response?.data?.message ||
+        err.message ||
+        "Request failed";
+      return rejectWithValue(message);
     }
   }
 );
